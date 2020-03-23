@@ -1,34 +1,40 @@
 #!/usr/bin/env python3
 #cosine similarity in prev project
 import pandas as pd
-import numpy as np 
+import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-# Get the data 
+# Get the data
 path = 'movie_metadata.csv'
-df = pd.read_csv(path) 
+df = pd.read_csv(path)
 
-print(list(df))
+#print(list(df))
 
 column_names= ['movie_title','genres','director_name','content_rating','imdb_score','plot_keywords','actor_2_name','actor_1_name']
 
 movie= df[column_names].copy()
+
+
+
 movie=movie.drop('content_rating',axis=1)
 
 def strip(row):
-    s= row['movie_title']
+    s= row['movie_title']   
     s=s.replace(u'\xa0',u' ')  # removing encoding
     while( len(s)>1 and s[-1] ==' '):
         s= s[0:-1]
     return str(s)
 movie['movie_title']= movie.apply(strip,axis=1)
 
+# movie= movie.drop_duplicates(subset='movie_title', keep='first')
+# #reseting of index other wise , previous index kept, then 0: 5043, some index are missing problem in 
+# movie.reset_index(drop= True)
+
+
 #add column index
-count_row = movie.shape[0] 
+count_row = movie.shape[0]
 cc= [x for x in range(count_row)]
 movie['index']=cc
-
-
 
 #handle missing values
 column_names= list(movie)
@@ -41,10 +47,10 @@ def split_genre(row):
     a= row['genres'].split('|')
     for k in a:
         s+= str(k)
-        s+=' '  
+        s+=' '
     return s
 movie['genres']= movie.apply(split_genre,axis=1)
-    
+
 #combing all the fields
 comb= 'combined'
 
@@ -73,9 +79,21 @@ def get_title_from_index(index):
 def get_index_from_title(title):
    return movie[movie.movie_title == title]['index'].values[0]
 
-m='Avatar' #copied from dataset
+## findind movie
+def is_movie_present(title):
+   #if movie[movie.movie_title == title].shape[0]>=1:  #also works! return matching rows
+   if title in movie.movie_title.values: 
+    return 1
+   else :return 0
+
+
+
+
+m='Avatar' 
 no='Inside Out'
-n='The Avengers' 
+n='The Avengers'
+
+print(is_movie_present(no))
 
 movie_index = get_index_from_title(m)
 print(movie_index)
@@ -101,7 +119,7 @@ for element in sorted_similar_movies:
     i=i+1
     if i>20:
         break
-    
+
 
 movie_index = get_index_from_title(n)
 print(movie_index)
@@ -114,3 +132,6 @@ for element in sorted_similar_movies:
     i=i+1
     if i>20:
         break
+        
+        
+       # """
