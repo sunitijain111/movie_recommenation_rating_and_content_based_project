@@ -1,5 +1,6 @@
 # movie_recommenation_project
-this is a project the gives th emovie recommmendation, using both popularity and content based method. 
+this is a project the gives th emovie recommmendation, using both popularity and content based method.
+run file movie_recommendation_5
 
 encodings:
 https://docs.python.org/3/howto/unicode.html
