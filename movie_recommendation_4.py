@@ -19,23 +19,46 @@ def strip(row):
     return str(s)
 movie['movie_title']= movie.apply(strip,axis=1)
 
+#remove all spaces, caps from names so that the avengers is same as THE avengers etc.
+def strip2(row):
+    s= row['movie_title']  
+    s=s.lower()           
+    a=""
+    for i in s:
+        if(i != ' '):
+            a+=i
+    return str(a)
+#print(strip2("Suniti Jain 99 2"))
+movie['movie_title_2']= movie.apply(strip2,axis=1)
+
+
 #handle missing values
 column_names= list(movie)
 for c in column_names:
   movie[c]=movie[c].fillna('')
 ########print(movie.iloc[0][1])  
   
-  
+"""  
 #handle missing values
 column_names= list(movie)
 for c in column_names:
   movie[c]=movie[c].fillna('')    
+"""
+##stip the spaces and caps
+def strip3(s): 
+    s=s.lower()           
+    a=""
+    for i in s:
+        if(i != ' '):
+            a+=i
+    return str(a)
 
 # movie.attributei.e. column name
 def get_title_from_index(index):
     return movie[movie.index==index]['movie_title'].values[0]
 
 def get_index_from_title(title):
+   title= strip3(title) 
    return movie[movie.movie_title == title]['index'].values[0]
 
 #computing distance between two movies

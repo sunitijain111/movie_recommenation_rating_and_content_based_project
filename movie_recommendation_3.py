@@ -26,6 +26,21 @@ def strip(row):
     return str(s)
 movie['movie_title']= movie.apply(strip,axis=1)
 
+
+
+#remove all spaces, caps from names so that the avengers is same as THE avengers etc.
+def strip2(row):
+    s= row['movie_title']  
+    s=s.lower()           
+    a=""
+    for i in s:
+        if(i != ' '):
+            a+=i
+    return str(a)
+#print(strip2("Suniti Jain 99 2"))
+movie['movie_title_2']= movie.apply(strip2,axis=1)
+
+
 # movie= movie.drop_duplicates(subset='movie_title', keep='first')
 # #reseting of index other wise , previous index kept, then 0: 5043, some index are missing problem in 
 # movie.reset_index(drop= True)
@@ -57,7 +72,7 @@ comb= 'combined'
 def combining_funct(row):
     s=''
     for c in column_names:
-       if c != 'content_rating' and c!= 'index' and c!= 'imdb_score':
+       if c != 'content_rating' and c!= 'index' and c!= 'imdb_score' and c!='movie_title_2':
         s+=str(row[c])
         s+=' '
     return s
@@ -77,26 +92,38 @@ def get_title_from_index(index):
     return movie[movie.index==index]['movie_title'].values[0]
 
 def get_index_from_title(title):
-   return movie[movie.movie_title == title]['index'].values[0]
+   title= strip3(title)
+   return movie[movie.movie_title_2 == title]['index'].values[0]
 
 ## findind movie
 def is_movie_present(title):
-   #if movie[movie.movie_title == title].shape[0]>=1:  #also works! return matching rows
-   if title in movie.movie_title.values: 
+   title= strip3(title)
+   #if movie[movie.movie_title_2 == title].shape[0]>=1:  #also works! return matching rows
+   if title in movie.movie_title_2.values: 
     return 1
    else :return 0
 
+##stip the spaces and caps
+def strip3(s): 
+    s=s.lower()           
+    a=""
+    for i in s:
+        if(i != ' '):
+            a+=i
+    return str(a)
 
-
-
+"""
 m='Avatar' 
 no='Inside Out'
 n='The Avengers'
 
-print(is_movie_present(no))
+#print(is_movie_present(m))
+
+###########apply all#####################
+
 
 movie_index = get_index_from_title(m)
-print(movie_index)
+#print(movie_index)
 similar_movies = list(enumerate(cosine_sim[movie_index]))
 sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)[1:]
 i=0
@@ -107,7 +134,7 @@ for element in sorted_similar_movies:
     if i>20:
         break
 
-
+##############till here####################
 movie_index = get_index_from_title(no)
 print(movie_index)
 similar_movies = list(enumerate(cosine_sim[movie_index]))
@@ -134,4 +161,4 @@ for element in sorted_similar_movies:
         break
         
         
-       # """
+"""
